@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'jabatan', 'username', 'email', 'password', 'telepon', 'tanggal_bergabung', 'status', 'jenis_kelamin'
     ];
 
     /**
@@ -36,4 +38,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getCreatedAtAttribute(){
+        if(!is_null($this->attributes['created_at']))
+            return Carbon::parse($this->attributes['created_at'])->format('Y-m-d H:i:s');
+    }
+    public function getUpdatedAtAttribute(){
+        if(!is_null($this->attributes['updated_at']))
+            return Carbon::parse($this->attributes['updated_at'])->format('Y-m-d H:i:s');
+    }
+    public function AauthAccessToken(){
+        return $this->hasMany('\App\OauthAccessToken');
+    }
 }
