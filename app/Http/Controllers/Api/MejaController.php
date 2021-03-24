@@ -112,7 +112,7 @@ class MejaController extends Controller
 
         $updateData = $request->all();
         $validate = Validator::make($updateData, [
-           'nomor_meja' => 'required|unique:mejas',
+            'nomor_meja' => [Rule::unique('mejas')->ignore($meja),'required'],
         ]);
 
         if($validate->fails())

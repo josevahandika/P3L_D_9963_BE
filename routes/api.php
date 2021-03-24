@@ -36,4 +36,18 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::get('meja/{id}','Api\MejaController@show');
     Route::get('hapusmeja/{id}','Api\MejaController@destroy');
     Route::put('meja/{id}','Api\MejaController@update');
+
+    //Route untuk bahan
+    Route::post('bahan','Api\BahanController@store');
+    Route::get('bahan','Api\BahanController@index');
+    Route::get('bahan/{id}','Api\BahanController@show');
+    Route::get('hapusbahan/{id}','Api\BahanController@destroy');
+    Route::put('bahan/{id}','Api\BahanController@update');
+
+    //Route untuk menu
+    Route::post('menu','Api\MenuController@store');
+    Route::get('menu','Api\MenuController@index');
+    Route::get('menu/{id}','Api\MenuController@show');
+    Route::get('hapusmenu/{id}','Api\MenuController@destroy');
+    Route::put('menu/{id}','Api\MenuController@update');
 });
