@@ -50,4 +50,21 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::get('menu/{id}','Api\MenuController@show');
     Route::get('hapusmenu/{id}','Api\MenuController@destroy');
     Route::put('menu/{id}','Api\MenuController@update');
+
+    //Route untuk customer
+    Route::post('customer','Api\CustomerController@store');
+    Route::get('customer','Api\CustomerController@index');
+    Route::get('customer/{id}','Api\CustomerController@show');
+    Route::get('hapuscustomer/{id}','Api\CustomerController@destroy');
+    Route::put('customer/{id}','Api\CustomerController@update');
+
+    //Route untuk riwayat masuk
+    Route::post('riwayatbahanmasuk','Api\RiwayatBahanMasukController@store');
+    Route::get('riwayatbahanmasuk','Api\RiwayatBahanMasukController@index');
+    Route::get('riwayatbahanmasuk/{id}','Api\RiwayatBahanMasukController@show');
+
+    //Route untuk riwayat keluar
+    Route::post('riwayatbahankeluar','Api\RiwayatBahanKeluarController@store');
+    Route::get('riwayatbahankeluar','Api\RiwayatBahanKeluarController@index');
+    Route::get('riwayatbahankeluar/{id}','Api\RiwayatBahanKeluarController@show');
 });
