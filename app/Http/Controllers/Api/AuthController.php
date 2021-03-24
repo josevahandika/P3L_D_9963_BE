@@ -25,14 +25,21 @@ class AuthController extends Controller
         if(!Auth::attempt($loginData))
             return response(['message' => 'Invalid Credentials'],401);
 
+            
         $user = Auth::user();
         // if (!$user->verified) {
         //     return response([
         //         'message' => 'Belum Verifikasi Email',
         //     ],400);
         // }
-        $token = $user->createToken('Authentication Token')->accessToken;
+        if($user->status=='Resign')
+        {
+            return response([
+                'message' =>'Akun telah resign',
+            ],401);
+        }
 
+        $token = $user->createToken('Authentication Token')->accessToken; //generate token
         return response([
             'message' => 'Authenticated',
             'user' => $user,

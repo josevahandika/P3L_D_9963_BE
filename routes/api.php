@@ -22,4 +22,18 @@ Route::post('login','Api\AuthController@login');
 Route::group(['middleware'=>'auth:api'], function () {
     // return $request->user();
     Route::post('logout','Api\AuthController@logout');
+
+    //Route untuk karyawan
+    Route::post('karyawan','Api\UserController@store');
+    Route::get('karyawan','Api\UserController@index');
+    Route::get('karyawan/{id}','Api\UserController@show');
+    Route::put('hapuskaryawan/{id}','Api\UserController@destroy');
+    Route::put('karyawan/{id}','Api\UserController@update');
+
+    //Route untuk meja
+    Route::post('meja','Api\MejaController@store');
+    Route::get('meja','Api\MejaController@index');
+    Route::get('meja/{id}','Api\MejaController@show');
+    Route::get('hapusmeja/{id}','Api\MejaController@destroy');
+    Route::put('meja/{id}','Api\MejaController@update');
 });
