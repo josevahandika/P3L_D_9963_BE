@@ -13,7 +13,7 @@ class TransaksiController extends Controller
 {
     //
     public function index(){
-        $transaksi = Transaksi::where('isDeleted', 0)->get();
+        $transaksi = Transaksi::where('total_harga', '!=', 0)->get();
 
         if(count($transaksi) > 0)
             return response([

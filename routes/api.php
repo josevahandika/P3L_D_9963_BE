@@ -67,4 +67,23 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::post('riwayatbahankeluar','Api\RiwayatBahanKeluarController@store');
     Route::get('riwayatbahankeluar','Api\RiwayatBahanKeluarController@index');
     Route::get('riwayatbahankeluar/{id}','Api\RiwayatBahanKeluarController@show');
+
+    //Route untuk detail transaksi
+    Route::post('detailtransaksi','Api\DetailTransaksiController@store');
+    Route::put('detailtransaksi/{id}','Api\DetailTransaksiController@update');
+    Route::get('detailtransaksiwaiter','Api\DetailTransaksiController@showWaiter');
+    Route::get('detailtransaksichef','Api\DetailTransaksiController@showChef');
+
+    //Route untuk reservasi
+    Route::post('reservasiold','Api\ReservasiController@storeOldCust');
+    Route::post('reservasinew','Api\ReservasiController@storeNewCust');
+    Route::get('reservasi','Api\ReservasiController@index');
+    Route::get('reservasi/{id}','Api\ReservasiController@show');
+    Route::get('hapusreservasi/{id}','Api\ReservasiController@destroy');
+    Route::put('reservasi/{id}','Api\ReservasiController@update');
+
+    //Route untuk transaksi
+    Route::post('transaksi','Api\TransaksiController@store');
+    Route::get('transaksi','Api\TransaksiController@index');
+    Route::get('transaksi/{id}','Api\TransaksiController@show');
 });

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Reservasi;
+use App\Customer;
 use Validator;
 
 class ReservasiController extends Controller
@@ -51,26 +52,13 @@ class ReservasiController extends Controller
             'id_meja' => 'required',
             'id_karyawan' => 'required',
             'nama_customer' => 'required',
-            'telepon' => 'required|unique:customers',
-            'email' => 'required|unique:customers',
+            'telepon' => 'required',
+            'email' => 'required',
         ]); //membuat rule validasi input
 
         if ($validate->fails()) {
-            $error = $validate->errors();
-            $errorTelepon = $validate->errors()->first('telepon');
-            $errorEmail = $validate->errors()->first('email');
-            
-            if ($errorTelepon === 'The telepon has already been taken.' ) {                
-                return response(['message' => "Nomor Telepon sudah terdaftar!"],400); //return error no telpon sudah terdaftar
-            }
-
-            if ($errorEmail === 'The email has already been taken.') {
-                return response(['message' => "Email sudah terdaftar!"],400); //return error email sudah terdaftar
-            }
-
             return response(['message' => $validate->errors()], 400); //return error invalid input
         }
-
 
         $storeCustomer['nama_customer'] = $storeData['nama_customer'];
         $storeCustomer['telepon'] = $storeData['telepon'];
@@ -85,7 +73,7 @@ class ReservasiController extends Controller
         $storeReservasi['id_meja'] = $storeData['id_meja'];
         $storeReservasi['id_karyawan'] = $storeData['id_karyawan'];
 
-        $reservasi = Reservasi::create($storeReservasi); //menambah data meja baru
+        $reservasi = Reservasi::create($storeReservasi); //menambah data reservasi baru
         return response([
             'message' => 'Add Reservasi Success',
             'data' => $reservasi,
@@ -104,18 +92,6 @@ class ReservasiController extends Controller
         ]); //membuat rule validasi input
 
         if ($validate->fails()) {
-            $error = $validate->errors();
-            $errorTelepon = $validate->errors()->first('telepon');
-            $errorEmail = $validate->errors()->first('email');
-            
-            if ($errorTelepon === 'The telepon has already been taken.' ) {                
-                return response(['message' => "Nomor Telepon sudah terdaftar!"],400); //return error no telpon sudah terdaftar
-            }
-
-            if ($errorEmail === 'The email has already been taken.') {
-                return response(['message' => "Email sudah terdaftar!"],400); //return error email sudah terdaftar
-            }
-
             return response(['message' => $validate->errors()], 400); //return error invalid input
         }
 
@@ -124,12 +100,12 @@ class ReservasiController extends Controller
         // $storeCustomer['telepon'] = $storeData['telepon'];
         // $storeCustomer['email'] = $storeData['email'];
 
-        $customer = Customer::create($storeCustomer);
-        $tempCustomer = json_decode(json_encode($customer), true);
+        // // $customer = Customer::create($storeCustomer);
+        // $tempCustomer = json_decode(json_encode($customer), true);
 
         $storeReservasi['tanggal_reservasi'] = $storeData['tanggal_reservasi'];
         $storeReservasi['sesi_reservasi'] = $storeData['sesi_reservasi'];
-        $storeReservasi['id_customer'] = $tempCustomer['id'];
+        $storeReservasi['id_customer'] = $storeData['id_customer'];
         $storeReservasi['id_meja'] = $storeData['id_meja'];
         $storeReservasi['id_karyawan'] = $storeData['id_karyawan'];
 
@@ -165,34 +141,36 @@ class ReservasiController extends Controller
     }
 
     public function update(Request $request, $id){
-        $bahan = Bahan::find($id);
-        if(is_null($bahan)){
-            return response([
-                'message' => 'Bahan Not Found',
-                'data' => null
-            ],404);
-        }
+            $reservasi = Reservasi::find($id);
+            if(is_null($reservasi)){
+                return response([
+                    'message' => 'Reservasi Not Found',
+                    'data' => null
+                ],404);
+            }
 
-        $updateData = $request->all();
-        $validate = Validator::make($updateData, [
-            'nama_bahan' => [Rule::unique('bahans')->ignore($bahan),'required'],
-            'unit' => 'required',
+            $updateData = $request->all();
+            $validate = Validator::make($updateData, [
+                'tanggal_reservasi' => 'required',
+                'sesi_reservasi' => 'required',
+                'id_meja' => 'required',
         ]);
 
         if($validate->fails())
             return response(['message' => $validate->errors()],400);
 
-       $bahan->nama_bahan = $updateData['nama_bahan'];
-       $bahan->unit = $updateData['unit'];
+       $reservasi->tanggal_reservasi = $updateData['tanggal_reservasi'];
+       $reservasi->sesi_reservasi = $updateData['sesi_reservasi'];
+       $reservasi->id_meja = $updateData['id_meja'];
 
-        if($bahan->save()){
+        if($reservasi->save()){
             return response([
-                'message' => 'Update Bahan Success',
-                'data' => $bahan,
+                'message' => 'Update Reservasi Success',
+                'data' => $reservasi,
             ],200);
         }
         return response([
-            'message' => 'Update Bahan Failed',
+            'message' => 'Update Reservasi Failed',
             'data' => null,
         ],400);
     }
