@@ -86,4 +86,5 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::post('transaksi','Api\TransaksiController@store');
     Route::get('transaksi','Api\TransaksiController@index');
     Route::get('transaksi/{id}','Api\TransaksiController@show');
+    Route::put('transaksi/{id}','Api\TransaksiController@update');
 });

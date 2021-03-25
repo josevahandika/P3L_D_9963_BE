@@ -8,14 +8,22 @@ use Illuminate\Validation\Rule;
 use App\Reservasi;
 use App\Customer;
 use Validator;
+use Illuminate\Support\Facades\DB;
 
 class ReservasiController extends Controller
 {
     //
     public function index(){
-        $reservasi = Reservasi::where('isDeleted', 0)->get();
-
-        if(count($customer) > 0)
+        $reservasi = DB::table('reservasis')
+                    ->join('customers','customers.id','=','reservasis.id_customer')
+                    ->join('mejas','mejas.id','=','reservasis.id_meja')
+                    ->join('users','users.id','=','reservasis.id_karyawan')
+                    ->select('reservasis.id','reservasis.tanggal_reservasi as  tanggal_reservasi', 'reservasis.sesi_reservasi as sesi_reservasi',
+                    'reservasis.status_reservasi as  status_reservasi', 'customers.nama_customer as nama_customer', 'mejas.nomor_meja as nomor_meja',
+                    'users.name as nama_karyawan')
+                    ->where('reservasis.isDeleted',0)
+                    ->get();
+        if(count($reservasi) > 0)
             return response([
                 'message' => 'Retrieve All Success',
                 'data' => $reservasi
