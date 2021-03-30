@@ -95,6 +95,28 @@ class UserController extends Controller
         ],400);
     }
 
+    public function restore($id){
+        $user = User::find($id);
+
+        if(is_null($user)){
+            return response([
+                'message' => 'Karyawan Not Found',
+                'data' => null
+            ],404);
+        }
+
+        $user->status = 'Aktif';
+        if($user->save()){
+            return response([
+                'message' => 'Restore Karyawan Success',
+                'data' => $user,
+            ],200);
+        }
+        return response([
+            'message' => 'Restore Karyawan Failed',
+            'data' => null,
+        ],400);
+    }
     public function update(Request $request, $id){
         $user = User::find($id);
         if(is_null($user)){

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Meja;
 use Validator;
@@ -52,7 +53,7 @@ class MejaController extends Controller
             
             if ($error === 'The nomor meja has already been taken.') {
                 $tempMeja = Meja::where('nomor_meja', $storeData['nomor_meja'])->first();
-                if($tempMeja->isDeleted === 1)
+                if($tempMeja->isDeleted == 1)
                 {
                     $tempMeja->isDeleted = 0;
                     if($tempMeja->save()){
@@ -61,6 +62,12 @@ class MejaController extends Controller
                             'data' => $tempMeja,
                         ],200);
                     }
+                }
+                else{
+                    return response([
+                        'message' => 'Meja Sudah Ada!',
+                        'data' => $null,
+                    ],404);
                 }
             }
             return response(['message' => $validate->errors()], 400); //return error invalid input
