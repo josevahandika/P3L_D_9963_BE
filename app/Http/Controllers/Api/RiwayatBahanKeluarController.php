@@ -15,7 +15,12 @@ class RiwayatBahanKeluarController extends Controller
 {
     //
     public function index(){
-        $bahankeluar = RiwayatBahanKeluar::where('isDeleted', 0)->get();
+        $bahankeluar = DB::table('riwayat_bahan_keluars')
+                    ->join('bahans','bahans.id','=','riwayat_bahan_keluars.id_bahan')
+                    ->select('riwayat_bahan_keluars.id','riwayat_bahan_keluars.jumlah as  jumlah', 'riwayat_bahan_keluars.status as status',
+                    'riwayat_bahan_keluars.tanggal as  tanggal', 'bahans.nama_bahan as nama_bahan')
+                    ->where('riwayat_bahan_keluars.isDeleted',0)
+                    ->get();
 
         if(count($bahankeluar) > 0)
             return response([

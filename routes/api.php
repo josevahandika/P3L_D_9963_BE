@@ -34,6 +34,7 @@ Route::group(['middleware'=>'auth:api'], function () {
     //Route untuk meja
     Route::post('meja','Api\MejaController@store');
     Route::get('meja','Api\MejaController@index');
+    Route::get('mejaKosong','Api\MejaController@indexMejaKosong');
     Route::get('meja/{id}','Api\MejaController@show');
     Route::put('hapusmeja/{id}','Api\MejaController@destroy');
     Route::put('meja/{id}','Api\MejaController@update');
@@ -91,4 +92,9 @@ Route::group(['middleware'=>'auth:api'], function () {
 
  //Route untuk kartu
  Route::get('kartu','Api\KartuController@index');
+
+ //Route untuk bahan harian
+ Route::post('bahanharian','Api\BahanHarianController@store');
+ Route::get('bahanharian','Api\BahanHarianController@index');
+ Route::get('bahanharian/{id}','Api\BahanHarianController@show');
 });

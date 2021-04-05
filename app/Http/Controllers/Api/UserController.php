@@ -130,7 +130,6 @@ class UserController extends Controller
         $validate = Validator::make($updateData, [
             'name' => 'required',
             'jabatan' => 'required',
-            'status' => 'required',
             'telepon' => 'required',
             'tanggal_bergabung' => 'required',
             'jenis_kelamin' => 'required',
@@ -141,7 +140,6 @@ class UserController extends Controller
 
         $user->name = $updateData['name'];
         $user->jabatan = $updateData['jabatan'];
-        $user->status = $updateData['status'];
         $user->telepon = $updateData['telepon'];
         $user->tanggal_bergabung = $updateData['tanggal_bergabung'];
         $user->jenis_kelamin = $updateData['jenis_kelamin'];

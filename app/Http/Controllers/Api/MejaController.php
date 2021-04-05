@@ -25,7 +25,21 @@ class MejaController extends Controller
             'data' => null
         ],404);
     }
+    public function indexMejaKosong(){
+        $meja = Meja::where('isDeleted', 0)
+                    ->where('status', '=', 'Kosong')->get();
 
+        if(count($meja) > 0)
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $meja
+            ],200);
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ],404);
+    }
     public function show($id){
         $meja = Meja::find($id);
 
@@ -63,10 +77,11 @@ class MejaController extends Controller
                         ],200);
                     }
                 }
-                else{
+                else
+                {
                     return response([
                         'message' => 'Meja Sudah Ada!',
-                        'data' => $null,
+                        'data' => null,
                     ],404);
                 }
             }
@@ -123,7 +138,14 @@ class MejaController extends Controller
         ]);
 
         if($validate->fails())
+        {
+            $error = $validate->errors()->first();
+            
+            if ($error === 'The nomor meja has already been taken.') {
+                return response(['message' => 'Nomor meja sudah ada!'],400);
+            }
             return response(['message' => $validate->errors()],400);
+        }
 
         $meja->nomor_meja = $updateData['nomor_meja'];
 
