@@ -42,6 +42,7 @@ Route::group(['middleware'=>'auth:api'], function () {
     //Route untuk bahan
     Route::post('bahan','Api\BahanController@store');
     Route::get('bahan','Api\BahanController@index');
+    Route::get('bahanKosong','Api\BahanController@indexBahanHabis');
     Route::get('bahan/{id}','Api\BahanController@show');
     Route::put('hapusbahan/{id}','Api\BahanController@destroy');
     Route::put('bahan/{id}','Api\BahanController@update');

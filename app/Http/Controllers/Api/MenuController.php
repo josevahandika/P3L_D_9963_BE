@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Menu;
 use Validator;
 
@@ -12,7 +13,12 @@ class MenuController extends Controller
 {
     //
     public function index(){
-        $menu = Menu::where('isDeleted', 0)->get();
+        $menu = DB::table('menus')
+                    ->join('bahans','bahans.id','=','menus.id_bahan')
+                    ->select('menus.id','menus.nama_menu as  nama_menu', 'menus.takaran_saji as takaran_saji','menus.harga as harga',
+                    'menus.kategori as  kategori', 'menus.unit as unit','menus.deskripsi as deskripsi','bahans.nama_bahan as nama_bahan')
+                    ->where('menus.isDeleted',0)
+                    ->get();
 
         if(count($menu) > 0)
             return response([
@@ -62,6 +68,12 @@ class MenuController extends Controller
                 if($tempMenu->isDeleted === 1)
                 {
                     $tempMenu->isDeleted = 0;
+                    $tempMenu->takaran_saji = $storeData['takaran_saji'];
+                    $tempMenu->harga = $storeData['harga'];
+                    $tempMenu->kategori = $storeData['kategori'];
+                    $tempMenu->unit = $storeData['unit'];
+                    $tempMenu->deskripsi = $storeData['deskripsi'];
+                    $tempMenu->id_bahan = $storeData['id_bahan'];
                     if($tempMenu->save()){
                         return response([
                             'message' => 'Insert Menu Success!',

@@ -36,6 +36,7 @@ class AuthController extends Controller
         {
             return response([
                 'message' =>'Akun telah resign',
+                'data' => null,
             ],401);
         }
 
@@ -56,6 +57,7 @@ class AuthController extends Controller
 
         return response([
             'message' => 'Logout Success',
+            'data' => null,
         ]);
         }
     }

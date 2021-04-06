@@ -25,7 +25,22 @@ class BahanController extends Controller
             'data' => null
         ],404);
     }
+    public function indexBahanHabis(){
+        $bahan = Bahan::where('isDeleted', 0)
+                    ->where('jumlah_bahan_sisa', '=', '0')->get();
 
+        if(count($bahan) > 0)
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $bahan
+            ],200);
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ],404);
+    }
+    
     public function show($id){
         $bahan = Bahan::find($id);
 

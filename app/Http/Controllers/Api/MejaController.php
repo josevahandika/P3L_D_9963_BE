@@ -142,12 +142,30 @@ class MejaController extends Controller
             $error = $validate->errors()->first();
             
             if ($error === 'The nomor meja has already been taken.') {
-                return response(['message' => 'Nomor meja sudah ada!'],400);
+                $tempMeja = Meja::where('nomor_meja', $updateData['nomor_meja'])->first();
+                if($tempMeja->isDeleted == 1)
+                {
+                    $tempMeja->isDeleted = 0;
+                    $meja->isDeleted = 1;
+                    $meja->save();
+                    if($tempMeja->save()){
+                        return response([
+                            'message' => 'Update Meja Success!',
+                            'data' => $tempMeja,
+                        ],200);
+                    }
+                    else{
+                        return response([
+                            'message' => 'Update Meja Failed',
+                            'data' => null,
+                        ],400);
+                    }
             }
             return response(['message' => $validate->errors()],400);
         }
-
-        $meja->nomor_meja = $updateData['nomor_meja'];
+        
+    }
+    $meja->nomor_meja = $updateData['nomor_meja'];
 
         if($meja->save()){
             return response([
@@ -155,9 +173,9 @@ class MejaController extends Controller
                 'data' => $meja,
             ],200);
         }
-        return response([
-            'message' => 'Update Meja Failed',
-            'data' => null,
-        ],400);
-    }
+    return response([
+        'message' => 'Gagal memperbaharui meja',
+        'data' => null,
+    ],400);
+}
 }
