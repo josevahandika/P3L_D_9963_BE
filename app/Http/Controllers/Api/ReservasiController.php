@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Reservasi;
 use App\Customer;
+use App\Meja;
 use Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +20,7 @@ class ReservasiController extends Controller
                     ->join('mejas','mejas.id','=','reservasis.id_meja')
                     ->join('users','users.id','=','reservasis.id_karyawan')
                     ->select('reservasis.id','reservasis.tanggal_reservasi as  tanggal_reservasi', 'reservasis.sesi_reservasi as sesi_reservasi',
-                    'reservasis.status_reservasi as  status_reservasi', 'customers.nama_customer as nama_customer', 'mejas.nomor_meja as nomor_meja',
+                    'reservasis.status_reservasi as  status_reservasi', 'customers.nama_customer as nama_customer',  'customers.telepon as telepon', 'customers.email as email', 'mejas.nomor_meja as nomor_meja',
                     'users.name as nama_karyawan')
                     ->where('reservasis.isDeleted',0)
                     ->get();
@@ -49,6 +50,37 @@ class ReservasiController extends Controller
             'message' => 'Reservasi Not Found',
             'data' => null
         ],404);
+    }
+
+    public function showMejaReservasi(Request $request){
+        $mejas = Meja::where('isDeleted', 0)->get();
+
+        $tanggal_reservasi = $request->tanggal_reservasi;
+        $sesi_reservasi = $request->sesi_reservasi;
+
+        if(count($mejas) == 0)
+            return response([
+                'message' => 'Meja Not Found',
+                'data' => null
+            ],404);
+
+        foreach($mejas as $meja)
+        {
+            $meja->status = "Kosong";
+            $reservasi = Reservasi::where('isDeleted', 0)
+                        ->where('tanggal_reservasi', $tanggal_reservasi)
+                        ->where('sesi_reservasi', $sesi_reservasi)
+                        ->where('id_meja', $meja->id)
+            ->first();
+
+            if(!is_null($reservasi)) {
+                $meja->status = "Isi";
+            }
+        }
+        return response([
+            'message' => 'Retrieve Meja Success',
+            'data' => $mejas,
+        ],200);
     }
 
     //method untuk menambah 1 data reservasi dengan customer baru (create)

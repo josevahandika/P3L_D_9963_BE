@@ -82,6 +82,7 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::post('reservasinew','Api\ReservasiController@storeNewCust');
     Route::get('reservasi','Api\ReservasiController@index');
     Route::get('reservasi/{id}','Api\ReservasiController@show');
+    Route::post('mejareservasi','Api\ReservasiController@showMejaReservasi');
     Route::put('hapusreservasi/{id}','Api\ReservasiController@destroy');
     Route::put('reservasi/{id}','Api\ReservasiController@update');
 
