@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::post('login','Api\AuthController@login');
+Route::get('menu','Api\MenuController@index');
 Route::group(['middleware'=>'auth:api'], function () {
     // return $request->user();
     Route::post('logout','Api\AuthController@logout');
@@ -49,7 +50,6 @@ Route::group(['middleware'=>'auth:api'], function () {
 
     //Route untuk menu
     Route::post('menu','Api\MenuController@store');
-    Route::get('menu','Api\MenuController@index');
     Route::get('menu/{id}','Api\MenuController@show');
     Route::put('hapusmenu/{id}','Api\MenuController@destroy');
     Route::put('menu/{id}','Api\MenuController@update');

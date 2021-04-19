@@ -12,12 +12,18 @@ use App\Menu;
 use App\Bahan;
 use Carbon\Carbon;
 use Validator;
+use Illuminate\Support\Facades\DB;
 
 class DetailTransaksiController extends Controller
 {
     //
     public function showWaiter(){
-        $detailtransaksi = DetailTransaksi::where('status_chef', '=', 'Ready to Serve')->get();
+        $detailtransaksi = DB::table('detail_transaksis')
+                         ->join('menus','menus.id','=','detail_transaksis.id_menu')
+                         ->select('detail_transaksis.*','menus.nama_menu')
+                         ->where('status_chef', '=', 'Ready to Serve')
+                         ->where('detail_transaksis.isDeleted',0)
+                         ->get();
 
         if(count($detailtransaksi) > 0)
             return response([
@@ -31,7 +37,12 @@ class DetailTransaksiController extends Controller
         ],404);
     }
     public function showChef(){
-        $detailtransaksi = DetailTransaksi::where('status_chef', '=', 'Pending')->get();
+        $detailtransaksi = DB::table('detail_transaksis')
+                            ->join('menus','menus.id','=','detail_transaksis.id_menu')
+                            ->select('detail_transaksis.*','menus.nama_menu')
+                            ->where('status_chef', '=', 'Pending')
+                            ->where('detail_transaksis.isDeleted',0)
+                            ->get();
 
         if(count($detailtransaksi) > 0)
             return response([
@@ -117,7 +128,6 @@ class DetailTransaksiController extends Controller
                 'data' => null
             ],404);
         }
-
         $detailtransaksi->status_chef = $updateData['status_chef'];
 
         if($detailtransaksi->save()){
