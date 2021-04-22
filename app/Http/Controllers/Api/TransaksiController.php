@@ -16,7 +16,36 @@ class TransaksiController extends Controller
 {
     //
     public function index(){
-        $transaksi = Transaksi::where('total_harga', '!=', 0)->get();
+        $transaksi = DB::table('transaksis')
+                    ->join('reservasis','reservasis.id','=','transaksis.id_reservasi')
+                    ->join('users','users.id', '=', 'reservasis.id_karyawan')
+                    ->join('customers','customers.id', '=', 'reservasis.id_meja')
+                    ->join('mejas','mejas.id', '=', 'reservasis.id_meja')
+                    ->select('transaksis.*','users.name','mejas.nomor_meja','customers.nama_customer')
+                    ->where('transaksis.metode_pembayaran',null)
+                    ->get();
+
+        if(count($transaksi) > 0)
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $transaksi
+            ],200);
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ],404);
+    }
+
+    public function indexHistory(){
+        $transaksi = DB::table('transaksis')
+                    ->join('reservasis','reservasis.id','=','transaksis.id_reservasi')
+                    ->join('users','users.id', '=', 'reservasis.id_karyawan')
+                    ->join('customers','customers.id', '=', 'reservasis.id_meja')
+                    ->join('mejas','mejas.id', '=', 'reservasis.id_meja')
+                    ->select('transaksis.*','users.name','mejas.nomor_meja','customers.nama_customer')
+                    ->where('transaksis.metode_pembayaran','!=',null)
+                    ->get();
 
         if(count($transaksi) > 0)
             return response([

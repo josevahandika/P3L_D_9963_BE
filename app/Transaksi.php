@@ -9,7 +9,7 @@ class Transaksi extends Model
 {
     //
     protected $fillable = [
-        'nomor_transaksi', 'metode_pembayaran', 'total_harga', 'tanggal_transaksi', 'kode_verifikasi', 'id_reservasi', 'id_karyawan', 'nomor_kartu', 'isDeleted',
+        'nomor_transaksi', 'metode_pembayaran', 'total_harga', 'tanggal_transaksi', 'kode_verifikasi', 'id_reservasi', 'id_karyawan', 'nomor_kartu', 'status', 'isDeleted',
     ];
 
     public function getCreatedAtAttribute() {

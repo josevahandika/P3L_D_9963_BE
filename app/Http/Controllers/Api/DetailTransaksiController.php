@@ -9,6 +9,7 @@ use App\RiwayatBahanKeluar;
 use App\BahanHarian;
 use App\Transaksi;
 use App\Menu;
+use App\Kartu;
 use App\Bahan;
 use Carbon\Carbon;
 use Validator;
@@ -55,9 +56,27 @@ class DetailTransaksiController extends Controller
             'data' => null
         ],404);
     }
-    public function showTransaksi($id){
-        $detailtransaksi = DetailTransaksi::where('id_transaksi', '=', $id)->get();
 
+    public function showTransaksi(Request $request,$id){
+        $detailtransaksi=$request->all;
+        if('metode_pembayaran' == 'Non Tunai')
+        { 
+            $detailtransaksi = DB::table('detail_transaksis')
+            ->join('transaksis','transaksis.id','=','detail_transaksis.id_transaksi')
+            ->join('menus','menus.id','=','detail_transaksis.id_menu')
+            ->join('kartus','kartus.nomor_kartu','=','transaksis.nomor_kartu')
+            ->select('detail_transaksis.*','menus.nama_menu')
+            ->where('transaksis.id','=',$id)
+            ->get();
+        }
+        else{
+            $detailtransaksi = DB::table('detail_transaksis')
+            ->join('transaksis','transaksis.id','=','detail_transaksis.id_transaksi')
+            ->join('menus','menus.id','=','detail_transaksis.id_menu')
+            ->select('detail_transaksis.*','menus.nama_menu')
+            ->where('transaksis.id','=',$id)
+            ->get();
+        }
         if(!is_null($detailtransaksi))
             return response([
                 'message' => 'Retrieve Detail Transaksi Success',
