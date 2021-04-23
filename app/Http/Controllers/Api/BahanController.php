@@ -130,9 +130,26 @@ class BahanController extends Controller
             'unit' => 'required',
         ]);
 
-        if($validate->fails())
-            return response(['message' => $validate->errors()],400);
+        if($validate->fails()){
+        $error = $validate->errors()->first();
 
+        if($error == 'The nama bahan has already been taken.')
+        {
+            $tempBahan = Bahan::where('nama_bahan', $updateData['nama_bahan'])->first();
+            if($tempBahan->isDeleted == 1){
+                return response([
+                    'message' => 'Silakan Input Ulang Nama Bahan',
+                    'data' => null
+                ],400);
+            } else{
+                return response([
+                    'message' => 'Nama Bahan Sudah Ada',
+                    'data' => null
+                ],400);
+            }
+        }
+            return response(['message' => $validate->errors()],400);
+    }
        $bahan->nama_bahan = $updateData['nama_bahan'];
        $bahan->unit = $updateData['unit'];
 

@@ -16,7 +16,7 @@ class MenuController extends Controller
         $menu = DB::table('menus')
                     ->join('bahans','bahans.id','=','menus.id_bahan')
                     ->select('menus.id','menus.nama_menu as  nama_menu', 'menus.takaran_saji as takaran_saji','menus.harga as harga',
-                    'menus.kategori as  kategori', 'menus.unit as unit','menus.deskripsi as deskripsi','bahans.nama_bahan as nama_bahan')
+                    'menus.kategori as  kategori', 'menus.unit as unit','menus.deskripsi as deskripsi','bahans.id as id_bahan','bahans.nama_bahan as nama_bahan')
                     ->where('menus.isDeleted',0)
                     ->get();
 
@@ -140,8 +140,26 @@ class MenuController extends Controller
             'id_bahan' => 'required',
         ]);
 
-        if($validate->fails())
-            return response(['message' => $validate->errors()],400);
+        if($validate->fails()){
+            $error = $validate->errors()->first();
+    
+            if($error == 'The nama menu has already been taken.')
+            {
+                $tempMenu = Menu::where('nama_menu', $updateData['nama_menu'])->first();
+                if($tempMenu->isDeleted == 1){
+                    return response([
+                        'message' => 'Silakan Input Ulang Nama Menu',
+                        'data' => null
+                    ],400);
+                } else{
+                    return response([
+                        'message' => 'Nama Menu Sudah Ada',
+                        'data' => null
+                    ],400);
+                }
+            }
+                return response(['message' => $validate->errors()],400);
+        }
 
         $menu->nama_menu = $updateData['nama_menu'];
         $menu->takaran_saji = $updateData['takaran_saji'];

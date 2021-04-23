@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Transaksi;
 use App\Reservasi;
 use App\Kartu;
+use App\Meja;
 use Validator;
 
 class TransaksiController extends Controller
@@ -43,7 +44,8 @@ class TransaksiController extends Controller
                     ->join('users','users.id', '=', 'reservasis.id_karyawan')
                     ->join('customers','customers.id', '=', 'reservasis.id_meja')
                     ->join('mejas','mejas.id', '=', 'reservasis.id_meja')
-                    ->select('transaksis.*','users.name','mejas.nomor_meja','customers.nama_customer')
+                    ->select(DB::raw('transaksis.*, (transaksis.total_harga*5/100) as pajakservice, (transaksis.total_harga*10/100) as pajaktax,
+                    (transaksis.total_harga*115/100) as total, users.name,mejas.nomor_meja,customers.nama_customer'))
                     ->where('transaksis.metode_pembayaran','!=',null)
                     ->get();
 
@@ -76,6 +78,16 @@ class TransaksiController extends Controller
 
     public function store(Request $request){
        $storeData = $request->all();
+       $meja = Meja::where('nomor_meja', '=', $storeData['nomor_meja']) ->first();
+       
+       if($meja->status=='Isi')
+       {
+           return response([
+            'message' => 'Meja Sudah Terisi',
+            'data' => null
+           ],404);
+       }
+
         $validate = Validator::make($storeData, [
             'id_reservasi' => 'required',
         ]);
@@ -112,6 +124,13 @@ class TransaksiController extends Controller
         $dateandtime=Carbon::now();
         $qrcode['waktu'] = $dateandtime->format('Hi');
         $qrcode['nama_karyawan'] = $reservasi->nama_karyawan;
+
+        $reservasi = Reservasi::find($storeData['id_reservasi']);
+        $reservasi->status_reservasi = "Finished";
+        $meja->status = "Isi";
+        $reservasi->save();
+        $meja->save();
+
         return response([
             'message' => 'Add Transaksi Success',
             'data' => $qrcode,
