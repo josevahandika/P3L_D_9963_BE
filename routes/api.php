@@ -77,6 +77,7 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::get('detailtransaksiwaiter','Api\DetailTransaksiController@showWaiter');
     Route::get('detailtransaksichef','Api\DetailTransaksiController@showChef');
     Route::get('detailtransaksi/{id}','Api\DetailTransaksiController@showTransaksi');
+    Route::get('detailtransaksifinish/{id}','Api\DetailTransaksiController@showFinish');
 
     //Route untuk reservasi
     Route::post('reservasiold','Api\ReservasiController@storeOldCust');

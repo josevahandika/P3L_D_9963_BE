@@ -89,6 +89,31 @@ class DetailTransaksiController extends Controller
         ],404);
     }
 
+    public function showFinish ($id){
+            $detailtransaksi = DB::table('detail_transaksis')
+            ->join('transaksis','transaksis.id','=','detail_transaksis.id_transaksi')
+            ->join('menus','menus.id','=','detail_transaksis.id_menu')
+            ->select('detail_transaksis.*','menus.nama_menu')
+            ->where('transaksis.id','=',$id)
+            ->get();
+            $total_bayar = DB::table('detail_transaksis')
+            ->where('id_transaksi', $id)
+            ->groupBy('id_transaksi')
+            ->sum('subtotal');
+
+        if(!is_null($detailtransaksi))
+            return response([
+                'message' => 'Retrieve Detail Transaksi Success',
+                'data' => $detailtransaksi,
+                'total' => $total_bayar
+            ],200);
+
+        return response([
+            'message' => 'Detail Transaksi Not Found',
+            'data' => null
+        ],404);
+    }
+
     public function store(Request $request){
         $storeData = $request->all();
         $tempData = array();
