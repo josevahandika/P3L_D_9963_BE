@@ -12,6 +12,7 @@ use App\Reservasi;
 use App\Kartu;
 use App\Meja;
 use Validator;
+use PDF;
 
 class TransaksiController extends Controller
 {
@@ -178,6 +179,10 @@ class TransaksiController extends Controller
         $transaksi->metode_pembayaran = $updateData['metode_pembayaran'];
         $transaksi->id_karyawan = $updateData['id_karyawan'];
 
+        $tempNoMeja = Meja::where('nomor_meja', '=', $updateData['nomor_meja']) ->first();
+        $tempNoMeja->status = 'Kosong';
+        $tempNoMeja->save();
+        
         if($transaksi->save()){
             return response([
                 'message' => 'Update data transaksi success',
@@ -188,5 +193,20 @@ class TransaksiController extends Controller
             'message' => 'Update transaksi failed',
             'data' => null,
         ],400);
+    }
+    public function generatePDF($id)
+    {
+        $data = DB::table('transaksis')
+                ->join('reservasis','reservasis.id','=','transaksis.id_reservasi')
+                ->join('users','users.id', '=', 'reservasis.id_karyawan')
+                ->join('customers','customers.id', '=', 'reservasis.id_meja')
+                ->join('mejas','mejas.id', '=', 'reservasis.id_meja')
+                ->select(DB::raw('transaksis.*, (transaksis.total_harga*5/100) as pajakservice, (transaksis.total_harga*10/100) as pajaktax,
+                (transaksis.total_harga*115/100) as total, users.name,mejas.nomor_meja,customers.nama_customer'))
+                ->where('transaksis.id','=',$id)
+                ->get();
+        $pdf = PDF::loadview('pdf',['transaksi'=>$data]);
+    	$pdf->setPaper('a4' , 'portrait');
+        return $pdf->output();
     }
 }

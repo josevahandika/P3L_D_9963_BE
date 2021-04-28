@@ -93,8 +93,9 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::get('transaksi','Api\TransaksiController@index');
     Route::get('transaksihistory','Api\TransaksiController@indexHistory');
     Route::get('transaksi/{id}','Api\TransaksiController@show');
-    Route::put('transaksi/{id}','Api\TransaksiController@update');
-
+    Route::put('transaksiBayar/{id}','Api\TransaksiController@update');
+    Route::get('generatePDF/{id}','Api\TransaksiController@generatePDF');
+    
  //Route untuk kartu
  Route::get('kartu','Api\KartuController@index');
 
