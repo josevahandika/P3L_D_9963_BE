@@ -103,4 +103,8 @@ Route::group(['middleware'=>'auth:api'], function () {
  Route::post('bahanharian','Api\BahanHarianController@store');
  Route::get('bahanharian','Api\BahanHarianController@index');
  Route::get('bahanharian/{id}','Api\BahanHarianController@show');
+
+ //Route untuk laporan
+ Route::get('menuLaporan','Api\LaporanController@namaMenu');
+ Route::get('laporanStok/{bulan}/{idKaryawan}/{id_menu}','Api\LaporanController@laporanStok');
 });

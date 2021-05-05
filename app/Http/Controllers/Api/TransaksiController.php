@@ -198,14 +198,36 @@ class TransaksiController extends Controller
     {
         $data = DB::table('transaksis')
                 ->join('reservasis','reservasis.id','=','transaksis.id_reservasi')
-                ->join('users','users.id', '=', 'reservasis.id_karyawan')
-                ->join('customers','customers.id', '=', 'reservasis.id_meja')
+                ->join('users','users.id', '=', 'transaksis.id_karyawan')
+                ->join('customers','customers.id', '=', 'reservasis.id_customer')
                 ->join('mejas','mejas.id', '=', 'reservasis.id_meja')
                 ->select(DB::raw('transaksis.*, (transaksis.total_harga*5/100) as pajakservice, (transaksis.total_harga*10/100) as pajaktax,
                 (transaksis.total_harga*115/100) as total, users.name,mejas.nomor_meja,customers.nama_customer'))
                 ->where('transaksis.id','=',$id)
-                ->get();
-        $pdf = PDF::loadview('pdf',['transaksi'=>$data]);
+                ->first();
+        $dataWaiter = DB::table('transaksis')
+                    ->join('reservasis','reservasis.id','=','transaksis.id_reservasi')
+                    ->join('users','users.id', '=', 'reservasis.id_karyawan')
+                    ->select('users.name')
+                    ->where('transaksis.id','=',$id)
+                    ->first();
+        $dataDetail = DB::table('detail_transaksis')
+                      ->join('transaksis','transaksis.id','=','detail_transaksis.id_transaksi')
+                      ->join('menus','menus.id', '=', 'detail_transaksis.id_menu')
+                      ->select('detail_transaksis.jumlah', 'menus.nama_menu as nama_menu', 'menus.harga as harga',
+                      'detail_transaksis.subtotal as subtotal')
+                      ->where('detail_transaksis.id_transaksi','=',$id)
+                      ->get();  
+        $tempJumlah = 0;
+        foreach($dataDetail as $dataDetails)
+        {
+            $tempJumlah = $tempJumlah + $dataDetails->jumlah;
+        }
+        $dataLain['waktu'] = Carbon::now()->format('H:i');
+        $dataLain['printed'] = 'Printed '.Carbon::now()->format('M d, Y H:i:s a');
+        $dataLain['jumlah_total'] = $tempJumlah;
+        $dataLain['jumlah_item']=count($dataDetail);
+        $pdf = PDF::loadview('pdf',['transaksi'=>$data, 'dataWaiter'=>$dataWaiter, 'dataDetail'=>$dataDetail,'dataLain'=>$dataLain]);
     	$pdf->setPaper('a4' , 'portrait');
         return $pdf->output();
     }
