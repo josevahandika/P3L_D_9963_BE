@@ -107,4 +107,9 @@ Route::group(['middleware'=>'auth:api'], function () {
  //Route untuk laporan
  Route::get('menuLaporan','Api\LaporanController@namaMenu');
  Route::get('laporanStok/{bulan}/{idKaryawan}/{id_menu}','Api\LaporanController@laporanStok');
+ Route::get('laporanStokBulananCustom/{bulan}/{idKaryawan}/{nama_menu}','Api\LaporanController@laporanStokBulananCustom');
+ Route::get('laporanStokCustomAll/{tanggal_awal}/{tanggal_akhir}/{idKaryawan}','Api\LaporanController@laporanStokCustomAll');
+ Route::get('laporanStokCustomItem/{tanggal_awal}/{tanggal_akhir}/{idKaryawan}/{nama_menu}','Api\LaporanController@laporanStokCustomItem');
+ Route::get('laporanPendapatan/{idKaryawan}/{tahun_awal}/{tahun_akhir}','Api\LaporanController@pendapatanLap');
+ Route::get('laporanPengeluaran/{idKaryawan}/{tahun_awal}/{tahun_akhir}','Api\LaporanController@pengeluaranLap');
 });

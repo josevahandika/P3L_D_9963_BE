@@ -69,8 +69,8 @@
 			<td style="text-align: left">{{$p->nama_menu}}</td>
 			<td style="text-align: right">{{$p->unit}} </td>
 			<td style="text-align: right">{{$p->incomingStock}} </td>
-			<td style="text-align: right">{{$p->wasteStock}} </td>
 			<td style="text-align: right">{{$p->remainingStock}} </td>
+			<td style="text-align: right">{{$p->wasteStock}} </td>
 		</tr>
         @endif
         @endforeach
