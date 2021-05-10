@@ -129,7 +129,17 @@ class DetailTransaksiController extends Controller
 
             $item['id_transaksi'] = $storeData['id_transaksi'];
             $item['subtotal'] = $item['jumlah'] * $tempMenu->harga;
-            DetailTransaksi::create($item);
+
+            $tempDT = DetailTransaksi::where('id_transaksi',$storeData['id_transaksi'])
+                                    ->where('id_menu', $item['id_menu'])
+                                    ->first();
+            if(is_null($tempDT)){
+                DetailTransaksi::create($item);
+            }else{
+                $tempDT->jumlah = $tempDT->jumlah + $item['jumlah'];
+                $tempDT->subtotal = $tempDT->subtotal + $item['subtotal'];
+                $tempDT->save();
+            }                       
             $riwayatKeluar['tanggal'] = $tempTime;
             $riwayatKeluar['jumlah'] = $item['jumlah'] * $tempMenu->takaran_saji;
             $riwayatKeluar['status'] ='Keluar';
