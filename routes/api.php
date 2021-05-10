@@ -110,6 +110,8 @@ Route::group(['middleware'=>'auth:api'], function () {
  Route::get('laporanStokBulananCustom/{bulan}/{idKaryawan}/{nama_menu}','Api\LaporanController@laporanStokBulananCustom');
  Route::get('laporanStokCustomAll/{tanggal_awal}/{tanggal_akhir}/{idKaryawan}','Api\LaporanController@laporanStokCustomAll');
  Route::get('laporanStokCustomItem/{tanggal_awal}/{tanggal_akhir}/{idKaryawan}/{nama_menu}','Api\LaporanController@laporanStokCustomItem');
+ Route::get('laporanPenjualanItemMenuBulanan/{bulan}/{idKaryawan}','Api\LaporanController@laporanPenjualanItemMenuBulanan');
+ Route::get('laporanPenjualanItemMenuTahunan/{tahun}/{idKaryawan}','Api\LaporanController@laporanPenjualanItemMenuTahunan');
  Route::get('laporanPendapatan/{idKaryawan}/{tahun_awal}/{tahun_akhir}','Api\LaporanController@pendapatanLap');
  Route::get('laporanPengeluaran/{idKaryawan}/{tahun_awal}/{tahun_akhir}','Api\LaporanController@pengeluaranLap');
 });

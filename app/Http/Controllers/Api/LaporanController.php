@@ -312,6 +312,102 @@ class LaporanController extends Controller
             $pdf->setPaper('a4' , 'portrait');
             return $pdf->output();          
     }
+    public function laporanPenjualanItemMenuBulanan($bulan, $idKaryawan)
+    {            
+            $menu = DB::table('menus')
+            ->select('menus.id','menus.nama_menu','menus.unit','menus.kategori')
+            ->where('menus.isDeleted',0)
+            ->get();
+            
+            $tempId = User::find($idKaryawan);
+            $dataLain['printed'] = 'Printed '.Carbon::now()->format('M d, Y H:i:s a');
+            $dataLain['nama_karyawan'] = $tempId->name;
+            $dataLain['periode'] = Carbon::parse($bulan)->format('F Y');
+            $tempBulan = explode("-",$bulan);                 
+            foreach($menu as $item)
+            {
+                        $tempPenjualan = DB::table('detail_transaksis')
+                                                ->join('transaksis','transaksis.id', '=', 'detail_transaksis.id_transaksi')
+                                                ->where('detail_transaksis.id_menu','=',$item->id)
+                                                ->whereMonth('transaksis.tanggal_transaksi','=',$tempBulan[1])
+                                                ->whereYear('transaksis.tanggal_transaksi','=',$tempBulan[0])
+                                                ->groupBy('transaksis.tanggal_transaksi')
+                                                ->select(DB::raw('SUM(detail_transaksis.jumlah) as jumlah'))
+                                                ->orderBy('detail_transaksis.jumlah','desc')
+                                                ->first();
+
+                        if($tempPenjualan==null)
+                        {
+                            $item->penjualanTertinggi = 0;
+                        }
+                        else{
+                            
+                            $item->penjualanTertinggi = json_decode($tempPenjualan->jumlah, true);
+                        }
+                        $item->totalPenjualan = DB::table('detail_transaksis')
+                                                ->join('transaksis','transaksis.id', '=', 'detail_transaksis.id_transaksi')
+                                                ->where('detail_transaksis.id_menu','=',$item->id)
+                                                ->whereMonth('transaksis.tanggal_transaksi','=',$tempBulan[1])
+                                                ->whereYear('transaksis.tanggal_transaksi','=',$tempBulan[0])
+                                                ->groupBy('transaksis.tanggal_transaksi')
+                                                ->sum('detail_transaksis.jumlah');                            
+            }    
+                    // return response([
+                    //         'message' => 'Retrieve All Success',
+                    //         'data' => $menu,
+                    //         'dataLain' => $dataLain
+                    //     ],200); 
+                        $pdf = PDF::loadview('laporanPenjualanItemMenu',['menu'=>$menu,'dataLain'=>$dataLain]);
+                        $pdf->setPaper('a4' , 'portrait');
+                        return $pdf->output();        
+            }
+    public function laporanPenjualanItemMenuTahunan($tahun, $idKaryawan)
+    {            
+            $menu = DB::table('menus')
+            ->select('menus.id','menus.nama_menu','menus.unit','menus.kategori')
+            ->where('menus.isDeleted',0)
+            ->get();
+            
+            $tempId = User::find($idKaryawan);
+            $dataLain['printed'] = 'Printed '.Carbon::now()->format('M d, Y H:i:s a');
+            $dataLain['nama_karyawan'] = $tempId->name;
+            $dataLain['periode'] = Carbon::parse($tahun)->format('Y');
+            $tempTahun = explode("-",$tahun);                 
+            foreach($menu as $item)
+            {
+                $tempPenjualan = DB::table('detail_transaksis')
+                                        ->join('transaksis','transaksis.id', '=', 'detail_transaksis.id_transaksi')
+                                        ->where('detail_transaksis.id_menu','=',$item->id)
+                                        ->whereYear('transaksis.tanggal_transaksi','=',$tempTahun[0])
+                                        ->groupBy('transaksis.tanggal_transaksi')
+                                        ->select(DB::raw('SUM(detail_transaksis.jumlah) as jumlah'))
+                                        ->orderBy('detail_transaksis.jumlah','desc')
+                                        ->first();
+                if($tempPenjualan==null)
+                {
+                    $item->penjualanTertinggi = 0;
+                }
+                else{
+                    
+                    $item->penjualanTertinggi = json_decode($tempPenjualan->jumlah, true);
+                }
+                $item->totalPenjualan = DB::table('detail_transaksis')
+                                        ->join('transaksis','transaksis.id', '=', 'detail_transaksis.id_transaksi')
+                                        ->where('detail_transaksis.id_menu','=',$item->id)
+                                        ->whereYear('transaksis.tanggal_transaksi','=',$tempTahun[0])
+                                        ->groupBy('transaksis.tanggal_transaksi')
+                                        ->sum('detail_transaksis.jumlah');                        
+                
+                    }    
+                    // return response([
+                    //         'message' => 'Retrieve All Success',
+                    //         'data' => $menu,
+                    //         'dataLain' => $dataLain
+                    //     ],200); 
+                        $pdf = PDF::loadview('laporanPenjualanItemMenu',['menu'=>$menu,'dataLain'=>$dataLain]);
+                        $pdf->setPaper('a4' , 'portrait');
+                        return $pdf->output();        
+            }
     public function pendapatanLap($idKaryawan, $tahunAwal, $tahunAkhir)
     {
         if($tahunAkhir == "Kosong")
