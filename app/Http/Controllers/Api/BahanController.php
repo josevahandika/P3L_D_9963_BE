@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Bahan;
 use Validator;
 
@@ -12,7 +13,11 @@ class BahanController extends Controller
 {
     //
     public function index(){
-        $bahan = Bahan::where('isDeleted', 0)->get();
+        $bahan = DB::table('bahans')
+        ->join('menus','menus.id_bahan','=','bahans.id')
+        ->select('bahans.*','menus.kategori')
+        ->where('bahans.isDeleted','=',0)
+        ->get();
 
         if(count($bahan) > 0)
             return response([
@@ -55,6 +60,7 @@ class BahanController extends Controller
             'data' => null
         ],404);
     }
+
 
     public function store(Request $request){
         $storeData = $request->all();

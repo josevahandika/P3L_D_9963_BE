@@ -93,7 +93,8 @@ class DetailTransaksiController extends Controller
             $detailtransaksi = DB::table('detail_transaksis')
             ->join('transaksis','transaksis.id','=','detail_transaksis.id_transaksi')
             ->join('menus','menus.id','=','detail_transaksis.id_menu')
-            ->select('detail_transaksis.*','menus.nama_menu')
+            ->select(DB::raw('SUM(detail_transaksis.jumlah) as jumlah, SUM(detail_transaksis.subtotal,menus.nama_menu as nama_menu'))
+            ->groupBy('menus.nama_menu')
             ->where('transaksis.id','=',$id)
             ->get();
             $total_bayar = DB::table('detail_transaksis')
@@ -129,17 +130,7 @@ class DetailTransaksiController extends Controller
 
             $item['id_transaksi'] = $storeData['id_transaksi'];
             $item['subtotal'] = $item['jumlah'] * $tempMenu->harga;
-
-            $tempDT = DetailTransaksi::where('id_transaksi',$storeData['id_transaksi'])
-                                    ->where('id_menu', $item['id_menu'])
-                                    ->first();
-            if(is_null($tempDT)){
-                DetailTransaksi::create($item);
-            }else{
-                $tempDT->jumlah = $tempDT->jumlah + $item['jumlah'];
-                $tempDT->subtotal = $tempDT->subtotal + $item['subtotal'];
-                $tempDT->save();
-            }                       
+            DetailTransaksi::create($item);                      
             $riwayatKeluar['tanggal'] = $tempTime;
             $riwayatKeluar['jumlah'] = $item['jumlah'] * $tempMenu->takaran_saji;
             $riwayatKeluar['status'] ='Keluar';
