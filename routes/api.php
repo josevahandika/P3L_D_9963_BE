@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('login','Api\AuthController@login');
 Route::get('menu','Api\MenuController@index');
+Route::post('detailtransaksi','Api\DetailTransaksiController@store');
 Route::group(['middleware'=>'auth:api'], function () {
     // return $request->user();
     Route::post('logout','Api\AuthController@logout');
@@ -72,7 +73,6 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::get('riwayatbahankeluar/{id}','Api\RiwayatBahanKeluarController@show');
 
     //Route untuk detail transaksi
-    Route::post('detailtransaksi','Api\DetailTransaksiController@store');
     Route::put('detailtransaksi/{id}','Api\DetailTransaksiController@update');
     Route::get('detailtransaksiwaiter','Api\DetailTransaksiController@showWaiter');
     Route::get('detailtransaksichef','Api\DetailTransaksiController@showChef');

@@ -93,7 +93,7 @@ class DetailTransaksiController extends Controller
             $detailtransaksi = DB::table('detail_transaksis')
             ->join('transaksis','transaksis.id','=','detail_transaksis.id_transaksi')
             ->join('menus','menus.id','=','detail_transaksis.id_menu')
-            ->select(DB::raw('SUM(detail_transaksis.jumlah) as jumlah, SUM(detail_transaksis.subtotal,menus.nama_menu as nama_menu'))
+            ->select(DB::raw('SUM(detail_transaksis.jumlah) as jumlah, SUM(detail_transaksis.subtotal) as subtotal ,menus.nama_menu as nama_menu'))
             ->groupBy('menus.nama_menu')
             ->where('transaksis.id','=',$id)
             ->get();
