@@ -231,4 +231,22 @@ class TransaksiController extends Controller
     	$pdf->setPaper('a4' , 'portrait');
         return $pdf->output();
     }
+
+    public function finishMobile($id){
+        $data = Transaksi::find($id);
+
+        if(is_null($data)){
+            return response([
+                'message' => 'Transaksi not found',
+                'data' => null,
+            ],400);
+        }
+        $data->status = 'Completed';
+        $data->save();
+
+        return response([
+            'message' => 'Selesaikan pembayaran di kasir',
+            'data' => null,
+        ],200);
+    }
 }

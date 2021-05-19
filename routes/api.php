@@ -78,6 +78,7 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::get('detailtransaksichef','Api\DetailTransaksiController@showChef');
     Route::get('detailtransaksi/{id}','Api\DetailTransaksiController@showTransaksi');
     Route::get('detailtransaksifinish/{id}','Api\DetailTransaksiController@showFinish');
+    Route::get('getAllItem/{id}','Api\DetailTransaksiController@getAllItem');
 
     //Route untuk reservasi
     Route::post('reservasiold','Api\ReservasiController@storeOldCust');
@@ -95,6 +96,7 @@ Route::group(['middleware'=>'auth:api'], function () {
     Route::get('transaksi/{id}','Api\TransaksiController@show');
     Route::put('transaksiBayar/{id}','Api\TransaksiController@update');
     Route::get('generatePDF/{id}','Api\TransaksiController@generatePDF');
+    Route::get('finishMobile/{id}','Api\TransaksiController@finishMobile');
     
  //Route untuk kartu
  Route::get('kartu','Api\KartuController@index');

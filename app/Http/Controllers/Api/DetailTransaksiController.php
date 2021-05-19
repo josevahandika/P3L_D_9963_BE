@@ -186,4 +186,37 @@ class DetailTransaksiController extends Controller
             'data' => null,
         ],400);
     }
+
+    public function getAllItem($id)
+    {
+        $detailTransaksi = DB::Table('detail_transaksis')
+                        ->join('menus','menus.id','=','detail_transaksis.id_menu')
+                        ->select(DB::raw('SUM(detail_transaksis.jumlah) as jumlah, SUM(detail_transaksis.subtotal) as subtotal, menus.nama_menu as nama_menu'))
+                        ->groupBy('menus.nama_menu')
+                        ->where('detail_transaksis.id_transaksi','=',$id)
+                        ->get();
+        
+        $tempJumlah = 0;
+
+        
+
+        if(is_null($detailTransaksi))
+        {
+            return response([
+                'message' => 'Detail Transaksi tidak ditemukan',
+                'data' => null
+            ],404);
+        }
+
+        foreach($detailTransaksi as $item)
+        {
+            $tempJumlah = $tempJumlah + $item->subtotal;
+        }
+
+        return response([
+            'message' => 'Detail Transaksi berhasil diambil',
+            'data' => $detailTransaksi,
+            'total_semuanya' => $tempJumlah
+        ],200);
+    }
 }
