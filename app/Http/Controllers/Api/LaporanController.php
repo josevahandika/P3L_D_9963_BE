@@ -122,6 +122,7 @@ class LaporanController extends Controller
                     ->first();
             $tempArray['unit'] = $menu->unit;
             
+            
             $tempArray['incomingStock'] = DB::table('riwayat_bahan_masuks')
                                         ->where('id_bahan','=',$menu->id_bahan)
                                         ->whereDate('tanggal','=',$tempTanggal)
@@ -159,6 +160,13 @@ class LaporanController extends Controller
             }
                 array_push($dataFinal, $tempArray);
             }
+                    $menu = DB::table('menus')
+                    ->select('menus.kategori')
+                    ->where('menus.nama_menu','=',$nama_menu)
+                    ->first();
+
+                    $dataLain['kategori'] = $menu->kategori;
+
                     $tempId = User::find($idKaryawan);
                     $dataLain['printed'] = 'Printed '.Carbon::now()->format('M d, Y H:i:s a');
                     $dataLain['nama_karyawan'] = $tempId->name;
@@ -298,6 +306,13 @@ class LaporanController extends Controller
             }
                 array_push($dataFinal, $tempArray);
             }
+                    $menu = DB::table('menus')
+                            ->select('menus.kategori')
+                            ->where('menus.nama_menu','=',$nama_menu)
+                            ->first();
+                    
+                    $dataLain['kategori'] = $menu->kategori;
+
                     $tempId = User::find($idKaryawan);
                     $dataLain['printed'] = 'Printed '.Carbon::now()->format('M d, Y H:i:s a');
                     $dataLain['nama_karyawan'] = $tempId->name;

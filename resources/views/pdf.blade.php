@@ -17,7 +17,7 @@
 	</style>
 	
 	<center>
-		<img src="https://dbakbresto.ezraaudivano.com/public/akb_nota.jpg" style="width: 500px">
+		<img src="{{public_path('assets/akb_nota.jpg')}}" style="width: 500px">
 	</center>
     
 	<hr style="border-top: 5px dashed"></hr>

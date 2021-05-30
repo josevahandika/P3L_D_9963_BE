@@ -21,7 +21,7 @@ class TransaksiController extends Controller
         $transaksi = DB::table('transaksis')
                     ->join('reservasis','reservasis.id','=','transaksis.id_reservasi')
                     ->join('users','users.id', '=', 'reservasis.id_karyawan')
-                    ->join('customers','customers.id', '=', 'reservasis.id_meja')
+                    ->join('customers','customers.id', '=', 'reservasis.id_customer')
                     ->join('mejas','mejas.id', '=', 'reservasis.id_meja')
                     ->select('transaksis.*','users.name','mejas.nomor_meja','customers.nama_customer')
                     ->where('transaksis.metode_pembayaran',null)
@@ -43,7 +43,7 @@ class TransaksiController extends Controller
         $transaksi = DB::table('transaksis')
                     ->join('reservasis','reservasis.id','=','transaksis.id_reservasi')
                     ->join('users','users.id', '=', 'reservasis.id_karyawan')
-                    ->join('customers','customers.id', '=', 'reservasis.id_meja')
+                    ->join('customers','customers.id', '=', 'reservasis.id_customer')
                     ->join('mejas','mejas.id', '=', 'reservasis.id_meja')
                     ->select(DB::raw('transaksis.*, (transaksis.total_harga*5/100) as pajakservice, (transaksis.total_harga*10/100) as pajaktax,
                     (transaksis.total_harga*115/100) as total, users.name,mejas.nomor_meja,customers.nama_customer'))

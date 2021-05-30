@@ -17,7 +17,7 @@
 	</style>
 	
 	<center>
-		<img src="https://dbakbresto.ezraaudivano.com/public/akb_nota.jpg" style="width: 500px">
+		<img src="{{public_path('assets/akb_nota.jpg')}}" style="width: 500px">
 	</center>
     <h3 style="text-align: center">LAPORAN STOK BAHAN</h3>
 	<hr style="border-top: 5px dashed"></hr>
@@ -31,7 +31,9 @@
 			<td style="text-align: right">Unit </td>
 			<td style="text-align: right">Incoming Stock </td>
 			<td style="text-align: right">Remaining Stock </td>
+			@if($dataLain['kategori']=='Makanan Utama')
 			<td style="text-align: right">Waste Stock </td>
+			@endif
 		</tr>
         @php $i=1 @endphp
         @foreach($menu as $p)
@@ -41,7 +43,9 @@
 			<td style="text-align: right">{{$p['unit']}} </td>
 			<td style="text-align: right">{{$p['incomingStock']}} </td>
 			<td style="text-align: right">{{$p['remainingStock']}} </td>
+			@if($dataLain['kategori']=='Makanan Utama')
 			<td style="text-align: right">{{$p['wasteStock']}} </td>
+			@endif
 		</tr>
         @endforeach
 		<tr>
